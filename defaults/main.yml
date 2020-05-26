@@ -1,3 +1,6 @@
 ---
 # defaults file for ioncube
 php_ioncube_path: /opt
+
+# defaults version of php
+php_version: "7.3"
