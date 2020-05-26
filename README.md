@@ -7,7 +7,9 @@ By default, it will decompress the package into `/opt` but it can be changed usi
 Role Variables
 --------------
 `php_ioncube_path: /opt` Folder where you want to install ioncube
+
 `php_ioncube_version: 10.3.9` Version of ionCube
+
 `php_version: 7.3` Version of your PHP
 
 
