@@ -1,3 +1,3 @@
 ---
 # defaults file for ioncube
-ioncube_path: /opt
+php_ioncube_path: /opt
