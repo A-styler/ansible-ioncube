@@ -1,18 +1,35 @@
 ---
 - name: Verifing if ioncube is installed
-  stat: path="{{ ioncube_path }}/ioncube"
+  stat: 
+    path: "{{ php_ioncube_path }}/ioncube"
   register: ioncube_dir
 
-- name: Download Ioncube loaders
-  get_url: url=http://downloads3.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz dest="{{ ioncube_path }}/ioncube_loaders_lin_x86-64.tar.gz"
-  when: ioncube_dir.stat.exists == False
+- name: Install ioncube
+  block:
 
-- unarchive:
-    src: "{{ ioncube_path }}/ioncube_loaders_lin_x86-64.tar.gz"
-    dest: "{{ ioncube_path }}"
-    remote_src: True
-  when: ioncube_dir.stat.exists == False
+  - name: Download Ioncube loaders
+    get_url: 
+      url: "http://downloads3.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64_{{ php_ioncube_version }}.tar.gz"
+      dest: "{{ php_ioncube_path }}/ioncube_loaders_lin_x86-64.tar.gz"
+  
+  - unarchive:
+      src: "{{ php_ioncube_path }}/ioncube_loaders_lin_x86-64.tar.gz"
+      dest: "{{ php_ioncube_path }}"
+      remote_src: True
+    when: ioncube_dir.stat.exists == False
+  
+  - name: Delete zip file
+    file: 
+      path: "{{ php_ioncube_path }}/ioncube_loaders_lin_x86-64.tar.gz" 
+      state: absent
+    when: ioncube_dir.stat.exists == False
+  
+  - name: Add ioncube.ini
+    template: 
+      src: ioncube.ini.j2
+      dest: "/etc/php/{{ php_version }}/mods-available/ioncube.ini"
+  
+  - name: Turn on ioncube
+    command: phpenmod ioncube
 
-- name: Delete zip file
-  file: path="{{ ioncube_path }}/ioncube_loaders_lin_x86-64.tar.gz" state=absent
   when: ioncube_dir.stat.exists == False
